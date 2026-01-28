@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { 
-  Calendar, 
   Trash2, 
   PlusCircle, 
   Stethoscope, 
   Clock, 
-  ClipboardList 
+  ClipboardList,
+  User 
 } from 'lucide-react';
 import './App.css';
 
@@ -20,8 +20,6 @@ interface Appointment {
   id: number;
   scheduled_at: string;
   patientName: string;
-  examType: string;
-  dateTime: string;
   observations: string;
   exam: {
     name: string;
@@ -41,21 +39,30 @@ export default function App() {
   }, []);
 
   const fetchExams = async () => {
-    const res = await axios.get(`${API_URL}/exams`);
-    setExams(res.data);
+    try {
+      const res = await axios.get(`${API_URL}/exams`);
+      setExams(res.data);
+    } catch (error) {
+      console.error("Erro ao buscar exames", error);
+    }
   };
 
   const fetchAppointments = async () => {
-    const res = await axios.get(`${API_URL}/appointments`);
-    setAppointments(res.data);
+    try {
+      const res = await axios.get(`${API_URL}/appointments`);
+      setAppointments(res.data);
+    } catch (error) {
+      console.error("Erro ao buscar agendamentos", error);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const formattedDate = new Date(formData.dateTime).toISOString();
       await axios.post(`${API_URL}/appointments`, {
-        // Map frontend names to Entity names
-        appointmentDate: formData.dateTime, 
+        scheduled_at : formData.scheduled_at,
+        appointmentDate: formData.dateTime,
         observations: formData.notes,
         exam: { id: Number(formData.examId) },
         patientName: "Admin", 
@@ -70,8 +77,12 @@ export default function App() {
 
   const handleDelete = async (id: number) => {
     if (confirm("Deseja excluir este agendamento?")) {
-      await axios.delete(`${API_URL}/appointments/${id}`);
-      fetchAppointments();
+      try {
+        await axios.delete(`${API_URL}/appointments/${id}`);
+        fetchAppointments();
+      } catch (error) {
+        alert("Erro ao deletar");
+      }
     }
   };
 
@@ -140,13 +151,32 @@ export default function App() {
             {appointments.map(app => (
               <div key={app.id} className="appointment-item">
                 <div className="appointment-info">
-                  <h3>{app.examType}</h3>
+                  
+                  {/* Paciente */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '0.9rem', marginBottom: '4px' }}>
+                    <User size={14} />
+                    <strong>Paciente: {app.patientName || "Não informado"}</strong>
+                  </div>
+
+                  {/* Nome do Exame */}
+                  <h3 style={{ margin: '4px 0' }}>
+                    {app.exam?.name || "Exame sem nome"}
+                  </h3>
+
+                  {/* Data e Hora */}
                   <div className="date-text">
                     <Clock size={14} />
-                    {new Date(app.dateTime).toLocaleString('pt-BR')}
+                    {new Date(app.scheduled_at).toLocaleString('pt-BR')}
                   </div>
-                  {app.notes && <div className="notes-box">{app.notes}</div>}
+
+                  {/* Observações */}
+                  {app.observations && (
+                    <div className="notes-box">
+                       <strong>Obs:</strong> {app.observations}
+                    </div>
+                  )}
                 </div>
+
                 <button className="delete-btn" onClick={() => handleDelete(app.id)}>
                   <Trash2 size={20} />
                 </button>
