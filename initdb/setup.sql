@@ -25,10 +25,10 @@ CREATE TABLE IF NOT EXISTS appointments (
 -- Populando exames disponíveis
 INSERT INTO exams (name, specialty) VALUES 
 ('Hemograma Completo', 'Hematologia'),
-('Ressonância Magnética', 'Radiologia'),
 ('Eletrocardiograma', 'Cardiologia');
 
 -- Populando um agendamento inicial para teste
 -- (Vinculado ao exame ID 1 - Hemograma)
 INSERT INTO appointments (exam_id, scheduled_at, observations) 
+
 VALUES (1, '2025-05-20 09:00:00', 'Paciente deve estar em jejum de 12 horas.');
