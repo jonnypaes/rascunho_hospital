@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: aspect_db
+    restart: always
+    environment:
+      NODE_ENV: development
+      MYSQL_ROOT_PASSWORD: mudar123
+      MYSQL_DATABASE: hospital_management
+      MYSQL_USER: user_aspect
+      MYSQL_PASSWORD: mudar123
+      TZ: America/Sao_Paulo
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmudar123"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - MyNetwork
+    deploy:
+      resources:
+        limits:
+          cpus: '0.9'
+          memory: '0.4GB'
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./initdb:/docker-entrypoint-initdb.d
+
+  backend:
+    build: ./backend
+    container_name: aspect_backend
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+      REDIS_HOST: redis
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - MyNetwork
+    deploy:
+      resources:
+        limits:
+          cpus: '0.9'
+          memory: '0.5GB'
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aspect_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    image: hospital-frontend:latest    
+    networks:
+      - MyNetwork
+    depends_on:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.8'
+          memory: '0.5GB'
+
+  redis:
+    image: redis:alpine
+    container_name: aspect_redis
+    command: redis-server --maxclients 20000
+    networks:
+      - MyNetwork
+    deploy:
+      resources:
+        limits:
+          cpus: '0.15'
+          memory: '0.2GB'
+
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: aspect_nginx
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./mkcert.pem:/etc/nginx/ssl/mkcert.pem:ro
+  #     - ./mkcert-key.pem:/etc/nginx/ssl/mkcert-key.pem:ro
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   depends_on:
+  #     - frontend
+  #     - backend
+  #   networks:
+  #     - MyNetwork
+
+networks:
+  MyNetwork:
+    driver: bridge
+
+volumes:
+  db_data:

@@ -1,0 +1,37 @@
+-- How to
+Development	npm run dev	src/server.ts (using ts-node)
+Production	npm start	dist/server.js (using node)
+
+-- Docker - Compose
+docker-compose up
+docker-compose up --build
+
+-- Open as cache
+# Using docker build directly
+docker build --progress=plain --no-cache -f frontend/Dockerfile -t hospital-frontend:debug frontend
+
+docker-compose build --no-cache frontend
+
+
+Summary of communication flow:
+    -Browser → localhost:5173 (Frontend)
+    -Frontend → localhost:3000 (API calls from your browser)
+    -Backend → db:3306 (Internal Docker network)
+
+-- Docker Nuclear clean
+docker-compose down
+docker system prune -f
+docker-compose up --build
+
+-- Check exams
+SELECT * FROM exams;
+
+-- Check appointments (Join)
+SELECT 
+    a.id, 
+    e.name AS exame, 
+    e.specialty, 
+    a.scheduled_at, 
+    a.observations 
+FROM appointments a
+JOIN exams e ON a.exam_id = e.id;
