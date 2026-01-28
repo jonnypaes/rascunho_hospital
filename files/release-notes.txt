@@ -1,0 +1,14 @@
+Características:
+Repositório organizado
+Padrão MVC
+Base fullstack integrada ( DB > Backend > Frontend)
+Operações de listagem, adição e remoção funcionais
+dummy.env (para renomear para .env e facilitar o teste)
+Licença MIT
+Arquivos facilitadores em "/files"
+Compose ultra parametrizado
+Ícone original
+
+Bugs:
+Listagem de exames com charset não-unicode
+Erro no frontend na listagem
