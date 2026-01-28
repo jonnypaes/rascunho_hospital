@@ -1,18 +1,75 @@
+/* style.css */
+
 :root {
+  /* Core palette (light defaults) */
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
-  --bg-gray: #f8fafc;
+
+  --bg-page: #f8fafc;      /* page background */
+  --card-bg: #ffffff;      /* card / surface background */
   --border: #e2e8f0;
   --text-main: #1e293b;
   --text-muted: #64748b;
-  --white: #ffffff;
+
+  /* Sidebar / Content specific variables (semantic) */
+  --sb-bg-color: #ffffff;
+  --sb-item-color: #000000;
+  --ct-bg-color: var(--bg-page);
+  --ct-text-color: var(--text-main);
+
+  /* Small UI bits */
+  --appointment-bg: #f1f5f9;
+  --note-bg: #f1f5f9;
+  --danger: #ef4444;
+  --focus-ring: rgba(37,99,235,0.25);
 }
 
+/* Respect user preference (automatic dark mode) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page: #0b0b0b;
+    --card-bg: #111827;
+    --border: #374151;
+    --text-main: #7b7b7b;
+    --text-muted: #94a3b8;
+
+    --sb-bg-color: #000000;
+    --sb-item-color: #ffffff;
+    --ct-bg-color: #0b0b0b;
+    --ct-text-color: #ffffff;
+
+    --appointment-bg: #0f1724;
+    --note-bg: #0b1220;
+    --focus-ring: rgba(29,78,216,0.20);
+  }
+}
+
+/* Manual override: add .theme-dark to <html> or <body> to force dark */
+.theme-dark {
+  --bg-page: #0b0b0b;
+  --card-bg: #111827;
+  --border: #374151;
+  --text-main: #7b7b7b;
+  --text-muted: #94a3b8;
+
+  --sb-bg-color: #000000;
+  --sb-item-color: #ffffff;
+  --ct-bg-color: #0b0b0b;
+  --ct-text-color: #ffffff;
+
+  --appointment-bg: #0f1724;
+  --note-bg: #0b1220;
+  --focus-ring: rgba(29,78,216,0.20);
+}
+
+/* Base layout */
 body {
   margin: 0;
-  background-color: var(--bg-gray);
-  color: var(--text-main);
+  background-color: var(--ct-bg-color);
+  color: var(--ct-text-color);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
@@ -21,6 +78,7 @@ body {
   padding: 20px;
 }
 
+/* Header */
 .header {
   display: flex;
   align-items: center;
@@ -44,11 +102,12 @@ body {
 
 /* Cards & Forms */
 .card {
-  background: var(--white);
+  background: var(--card-bg);
   padding: 24px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  color: var(--ct-text-color);
 }
 
 .sticky-card {
@@ -75,32 +134,57 @@ label {
   margin-bottom: 6px;
 }
 
+/* Inputs */
 input, select, textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
-  box-sizing: border-box; /* Fixes padding overflow */
+  box-sizing: border-box;
+  background: linear-gradient(transparent, transparent);
+  color: var(--text-main);
 }
 
+/* Clear focus-visible for keyboard users */
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Buttons */
 button.btn-primary {
   width: 100%;
   background: var(--primary);
-  color: white;
+  color: var(--card-bg);
   border: none;
   padding: 12px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.15s ease;
 }
 
-button.btn-primary:hover {
+button.btn-primary:hover,
+button.btn-primary:focus {
   background: var(--primary-hover);
 }
 
-/* List Styling */
+/* Sidebar & content areas */
+.sidebar {
+  color: var(--sb-item-color);
+  background-color: var(--sb-bg-color);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.content {
+  color: var(--ct-text-color);
+  background-color: transparent; /* content sits on page background */
+}
+
+/* Appointment list */
 .appointment-list {
   display: flex;
   flex-direction: column;
@@ -112,9 +196,10 @@ button.btn-primary:hover {
   justify-content: space-between;
   align-items: flex-start;
   padding: 16px;
-  background: var(--white);
+  background: var(--card-bg);
   border-radius: 10px;
   border: 1px solid var(--border);
+  color: var(--ct-text-color);
 }
 
 .appointment-info h3 {
@@ -132,22 +217,36 @@ button.btn-primary:hover {
 }
 
 .notes-box {
-  background: #f1f5f9;
+  background: var(--note-bg);
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 13px;
   margin-top: 10px;
   font-style: italic;
+  color: var(--text-muted);
 }
 
+/* Delete button */
 .delete-btn {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 5px;
+  font-size: 14px;
 }
 
 .delete-btn:hover {
-  color: #ef4444;
+  color: var(--danger);
+}
+
+/* Small helpers */
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.card + .card {
+  margin-top: 12px;
 }
