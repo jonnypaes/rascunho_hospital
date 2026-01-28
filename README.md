@@ -16,6 +16,7 @@ ___
 * [API](#api)
 * [Diferenciais](#diferenciais)
 * [Licença](#licença)
+* [Links](#links)
 
 ## Tecnologias
 
@@ -76,7 +77,7 @@ docker-compose up --build
 
 3. **Acesse as aplicações:**
 * **Browser:** [http://localhost:5173](http://localhost:5173)
-* **API:** [http://localhost:3000/exams](http://localhost:3000/exams) | [http://localhost:3000/appointments](http://localhost:3000/appointments) ([http://localhost:3000](http://localhost:3000))
+* **API:** [http://localhost:3000/exams](http://localhost:3000/exams) - [http://localhost:3000/appointments](http://localhost:3000/appointments) ([http://localhost:3000](http://localhost:3000))
 * **Database:** [http://localhost:3306](http://localhost:3306)
 
 
@@ -141,3 +142,6 @@ Abaixo estão os principais endpoints da aplicação:
 O software é licenciado com licença MIT e permite o uso comercial e não comercial do software, alteração e distribuição livre. 
 
 Para mais informações, leia o arquivo de [licença](LICENSE.txt)
+
+## Links
+[Github](https://github.com/jonnypaes/rascunho_hospital) | [Github Sites](https://jonnypaes.github.io/rascunho_hospital) | [Vercel](https://rascunho-hospital.vercel.app)
