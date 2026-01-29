@@ -15,4 +15,11 @@ export const AppDataSource = new DataSource({
   synchronize: true,
   logging: false,
   entities: [Exam, Appointment],
+  extra: {
+    connectionLimit: 10,
+    waitForConnections: true,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
+  }
 });
